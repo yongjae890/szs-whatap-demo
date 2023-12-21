@@ -1,0 +1,38 @@
+
+###
+GET http://localhost:8080/process
+
+<> 2023-12-19T120323.200.txt
+<> 2023-12-19T120018.200.txt
+<> 2023-12-19T114756.200.txt
+
+###
+GET http://localhost:8080/send
+
+<> 2023-12-19T120323-1.200.txt
+<> 2023-12-19T120018-1.200.txt
+<> 2023-12-19T114756-1.200.txt
+
+###
+GET http://localhost:8080/reactive/send
+
+###
+GET http://localhost:8080/reactive/receive
+
+<> 2023-12-19T120324.500.json
+<> 2023-12-19T120019.500.json
+<> 2023-12-19T114757.500.json
+
+###
+GET http://localhost:8080/reactor
+
+<> 2023-12-19T120325.200.txt
+<> 2023-12-19T120020.200.txt
+<> 2023-12-19T114758.200.txt
+
+###
+GET http://localhost:8080/rxjava
+
+<> 2023-12-19T120326.200.txt
+<> 2023-12-19T120021.200.txt
+<> 2023-12-19T114759.200.txt
