@@ -1,19 +1,69 @@
+
 # szs-whatap-demo
-# 우선순위
+
+## 우선순위
 1. kafka listen
 2. reactive kafka
 3. async completableFuture
 4. 나머지는 되는 대로
 
-# 실행방법
-# 아래 명령어를 실행하면 된다.
-docker-compose -f demo-kafka.yml up -d
-docker-compose -f demo-mysql.yml up -d
+## 실행방법
+아래 명령어를 실행하면 됩니다.
 
-# sql init
+```bash
+1. docker-compose -f demo-kafka.yml up -d
+2. docker-compose -f demo-mysql.yml up -d
+```
 
+## SQL 초기 설정
 
-<< 에이전트 설정 >>
+```sql
+create table async_kafka
+(
+    id bigint auto_increment primary key,
+    create_time datetime not null,
+    update_time datetime null,
+    status varchar(50)
+);
+
+create table reactor
+(
+    id bigint auto_increment primary key,
+    create_time datetime not null,
+    update_time datetime null,
+    status varchar(50)
+);
+
+create table async
+(
+    id bigint auto_increment primary key,
+    create_time datetime not null,
+    update_time datetime null,
+    status varchar(50)
+);
+
+create table rxjava
+(
+    id bigint auto_increment primary key,
+    create_time datetime not null,
+    update_time datetime null,
+    status varchar(50)
+);
+
+create table kafka
+(
+    id bigint auto_increment primary key,
+    create_time datetime not null,
+    update_time datetime null,
+    status varchar(50)
+);
+```
+
+## 에이전트 설정
+
+`whatap.conf` 파일 설정 예시:
+
+```conf
 [whatap.conf]
 ------------------------------------------------------------
 license=
@@ -36,3 +86,38 @@ trace_sql_param_enabled=true
 #hook_completablefuture_patterns=whatap.v1.W.*
 hook_method_patterns=org.apache.kafka.clients.producer.KafkaProducer.*
 hook_service_patterns=org.apache.kafka.clients.producer.KafkaProducer.*
+------------------------------------------------------------
+
+[whatap.conf]
+------------------------------------------------------------
+hook_completablefuture_patterns=whatap.v1.W.*
+------------------------------------------------------------
+```
+
+`com.whatap.demo.service.AsyncService.java` 파일 예시:
+
+```java
+[com.whatap.demo.service.AsyncService.java]
+------------------------------------------------------------
+...
+import whatap.v1.W;
+
+public class AsyncService {
+    @Async
+    public CompletableFuture<String> processAsync() {
+        // W.trace() 추가 (사용자 코드를 dummy가 감싸는 형태)
+        return CompletableFuture.supplyAsync(W.trace(() -> {
+            try {
+                asyncRepository.save(AsyncEntity.builder()
+                    .status("async")
+                    .build());
+                Thread.sleep(5000); // 5초 대기
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            return "Completed";
+        }));
+    }
+}
+------------------------------------------------------------
+```
