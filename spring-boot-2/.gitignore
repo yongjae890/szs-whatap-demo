@@ -35,4 +35,4 @@ out/
 
 ### VS Code ###
 .vscode/
-src/main/java/docker/mysql/**
+../docker/mysql/**
